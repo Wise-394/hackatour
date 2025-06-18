@@ -9,3 +9,7 @@
   --color-subtle-gray: #D0D3D4;
 
 }
+
+html, body {
+  overflow-x: hidden;
+}

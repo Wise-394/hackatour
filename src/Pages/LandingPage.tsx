@@ -67,7 +67,7 @@ const HeroSection = () => (
   <section
     id="hero"
     className="relative flex flex-col items-center justify-center w-full h-screen pt-24 text-center bg-center bg-cover"
-    style={{ backgroundImage: "url('/bg.png')" }}
+    style={{ backgroundImage: "url('./landing-page/bg.png')" }}
   >
     <div className="absolute inset-0 bg-charcoal-gray opacity-60"></div>
     <div className="relative z-10 max-w-4xl px-4 sm:px-6 lg:px-8">
@@ -95,7 +95,7 @@ const DescriptionSection = () => (
       <div className="relative w-full h-full">
         <div className="overflow-hidden shadow-lg rounded-3xl">
           <img
-            src="/pangasinan-tour.jpg" // Replace with your own image path
+            src="/landing-page/bolinao.jpg" // Replace with your own image path
             alt="Exploring Pangasinan"
             className="object-cover w-full h-full max-h-[500px] hover:scale-105 transition-transform duration-500 ease-in-out"
           />
@@ -126,23 +126,23 @@ const DescriptionSection = () => (
 const features = [
   {
     icon: <TrendingUp className="w-8 h-8 text-cyan-600" />,
-    title: 'Web3 Powered',
-    description: 'Experience travel with decentralization, transparency, and community governance.'
+    title: 'AI Itinerary Planner',
+    description: 'Let AI craft personalized travel plans based on your location, preferences, making every journey seamless and efficient.'
   },
   {
     icon: <Award className="w-8 h-8 text-cyan-600" />,
-    title: 'Earn NFT Rewards',
-    description: 'Complete tours and challenges to collect unique, verifiable digital rewards.'
+    title: 'Gamified Travel',
+    description: 'Embark on missions and challenges during your trip to earn digital rewards and collectibles'
   },
   {
     icon: <Shield className="w-8 h-8 text-cyan-600" />,
-    title: 'Verified Missions',
-    description: 'Each journey is backed by on-chain proof, making your achievements truly yours.'
+    title: 'NFT Marketplace',
+    description: 'Purchase exclusive NFTs that unlock real-world benefits and support local tourism communities.'
   },
   {
     icon: <Users className="w-8 h-8 text-cyan-600" />,
-    title: 'Community Driven',
-    description: 'Join a passionate explorer community shaping the future of tourism.'
+    title: 'Web3 Community',
+    description: 'Connect with fellow explorers in a decentralized community redefining the future of travel.'
   }
 ];
 
@@ -284,10 +284,10 @@ const JourneySection = () => (
 
 // ============ GALLERY =============
 const gallery = [
-  { src: '/img1.jpg', caption: 'Sunset at Hundred Islands' },
-  { src: '/img2.jpg', caption: 'Cultural Heritage Tour' },
-  { src: '/img3.jpg', caption: 'Local Cuisine Tasting' },
-  { src: '/img4.jpg', caption: 'Coastal Boat Trip' }
+  { src: '/landing-page/dagupan-museum.jpg', caption: 'Dagupan Museum' },
+  { src: '/landing-page/boat-trip.jpg', caption: 'Coastal Boat Trip' },
+  { src: '/landing-page/bangus-festival.jpg', caption: 'Celebrate Festivals' },
+  { src: '/landing-page/hidden-gem.jpg', caption: 'Find Hiddem Gems' }
 ];
 
 const GallerySection = () => (
