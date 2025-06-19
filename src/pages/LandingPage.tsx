@@ -2,18 +2,22 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, useInView } from "framer-motion";
 import { Plane, Compass, Info, X, Menu, Target, Search, Award, TrendingUp, Shield, Users, PartyPopper, ArrowUp } from 'lucide-react';
 import { useScrollDirection } from '../hooks/UseScrollDirection';
+import React from 'react';
+import ConnectWalletModal from "./ConnectWalletModal";
 
 //=============HEADER====================
-const Header = () => {
+interface HeaderProps {
+  onOpenWallet: () => void;
+}
+const Header = ({ onOpenWallet }: HeaderProps) => {
   const [open, setOpen] = useState(false);
   const scrollDir = useScrollDirection();
 
   return (
     <header
-      className={`
-        fixed w-full text-white bg-charcoal-gray/80 z-50 transition-[top] duration-300
-        ${scrollDir === 'down' ? '-top-24 md:-top-20' : 'top-0'}
-      `}
+      className={`fixed w-full text-white bg-charcoal-gray/80 z-50 transition-[top] duration-300 ${
+        scrollDir === "down" ? "-top-24 md:-top-20" : "top-0"
+      }`}
     >
       <nav className="container relative flex items-center justify-between p-4 mx-auto">
         {/* Logo */}
@@ -31,17 +35,15 @@ const Header = () => {
           {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
 
-        {/* Nav links */}
+        {/* Nav Links */}
         <ul
-          className={`
-            flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6
+          className={`flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6
             bg-charcoal-gray/90 md:bg-transparent absolute md:static
             top-full right-0 w-full md:w-auto p-6 md:p-0
             transition-all duration-300 ease-in-out
             ${open
               ? "opacity-100 translate-y-0 visible"
-              : "opacity-0 -translate-y-4 invisible md:visible md:translate-y-0 md:opacity-100"}
-          `}
+              : "opacity-0 -translate-y-4 invisible md:visible md:translate-y-0 md:opacity-100"}`}
         >
           <li>
             <a href="#" className="flex items-center space-x-1 text-lg font-semibold transition-colors hover:text-optimistic-yellow">
@@ -59,9 +61,12 @@ const Header = () => {
             </a>
           </li>
           <li>
-            <a href="#" className="flex items-center justify-center px-5 py-2 space-x-2 font-bold transition-all rounded-full shadow-md bg-cyan-vibrant text-charcoal-gray hover:bg-optimistic-yellow hover:scale-105">
+            <button
+              onClick={onOpenWallet}
+              className="flex items-center justify-center px-5 py-2 space-x-2 font-bold transition-all rounded-full shadow-md bg-cyan-vibrant text-charcoal-gray hover:bg-optimistic-yellow hover:scale-105"
+            >
               <Plane className="w-5 h-5" /><span>Start Tour</span>
-            </a>
+            </button>
           </li>
         </ul>
       </nav>
@@ -70,7 +75,10 @@ const Header = () => {
 };
 
 //=============HERO====================
-const HeroSection = () => (
+interface HeroSectionProps {
+  onOpenWallet: () => void;
+}
+const HeroSection = ({ onOpenWallet }: HeroSectionProps) => (
   <section
     id="hero"
     className="relative flex flex-col items-center justify-center w-full h-screen pt-24 text-center bg-center bg-cover"
@@ -85,6 +93,7 @@ const HeroSection = () => (
         Your unforgettable journey starts here. Discover unique experiences, earn rewards, and connect with fellow explorers.
       </p>
       <button
+        onClick={onOpenWallet}
         className="relative inline-flex items-center justify-center px-8 py-4 mt-10 font-extrabold transition-all duration-300 ease-in-out transform rounded-full shadow-lg group bg-cyan-vibrant text-charcoal-gray hover:bg-optimistic-yellow hover:scale-110 focus:outline-none focus:ring-4 focus:ring-cyan-300 animate-fade-in-up"
         style={{ animationDelay: '0.4s' }}
       >
@@ -132,7 +141,6 @@ const DescriptionSection = () => (
   </section>
 );
 
-
 //=============FEATURE====================
 const features = [
   {
@@ -161,7 +169,9 @@ const FeaturesSection = () => (
   <section className="py-24 bg-white">
     <div className="container px-4 mx-auto">
       <div className="mb-16 text-center">
-        <h2 className="text-4xl font-bold text-gray-900"> <span className="text-cyan-600">Hackatour</span> Your Future Tour Guide</h2>
+        <h2 className="text-4xl font-bold text-gray-900">
+          <span className="text-cyan-600">Hackatour</span> Your Future Tour Guide
+        </h2>
         <p className="mt-4 text-lg text-gray-600">
           Explore a new kind of tourism with blockchain-powered features designed for modern adventurers.
         </p>
@@ -174,10 +184,13 @@ const FeaturesSection = () => (
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: idx * 0.1 }}
             viewport={{ once: true }}
-            className="p-6 text-center transition-all shadow-md bg-gray-50 rounded-2xl hover:shadow-lg"
+            className="p-6 text-center transition-all duration-300 shadow-md cursor-pointer bg-gray-50 rounded-2xl group hover:shadow-xl hover:scale-105 hover:-translate-y-1"
           >
-            <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-cyan-100">
-              {feature.icon}
+            <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 transition-colors duration-300 rounded-full bg-cyan-100 group-hover:bg-optimistic-yellow">
+              {/* Ensure the icon itself also transitions color if desired */}
+              {React.cloneElement(feature.icon, {
+                className: `${feature.icon.props.className} transition-colors duration-300 group-hover:text-charcoal-gray`
+              })}
             </div>
             <h3 className="mb-2 text-xl font-semibold text-gray-800">{feature.title}</h3>
             <p className="text-gray-600">{feature.description}</p>
@@ -188,35 +201,40 @@ const FeaturesSection = () => (
   </section>
 );
 
-
 //=============JOURNEY====================
 const journeySteps = [
   {
-    icon: <Search className="w-full h-full" />, step: "01",
+    icon: <Search className="w-full h-full" />,
+    step: "01",
     title: "Search for Destination",
     description: "Browse through curated destinations across Pangasinan and discover hidden gems waiting to be explored."
   },
   {
-    icon: <Plane className="w-full h-full" />, step: "02",
+    icon: <Plane className="w-full h-full" />,
+    step: "02",
     title: "Travel",
     description: "Embark on your adventure with our guided AI routes and local recommendations for an authentic experience."
   },
   {
-    icon: <Target className="w-full h-full" />, step: "03",
+    icon: <Target className="w-full h-full" />,
+    step: "03",
     title: "Complete Mission",
     description: "Engage with interactive challenges, capture moments, and contribute valuable insights to the community."
   },
   {
-    icon: <Award className="w-full h-full" />, step: "04",
+    icon: <Award className="w-full h-full" />,
+    step: "04",
     title: "Earn NFT",
     description: "Mint unique digital collectibles and souvenirs that commemorate your journey and achievements."
   },
   {
-    icon: <TrendingUp className="w-full h-full" />, step: "05",
+    icon: <TrendingUp className="w-full h-full" />,
+    step: "05",
     title: "Level Up",
     description: "Advance your explorer status, unlock exclusive rewards, and gain access to premium destinations."
   },
-]
+];
+
 const JourneySection = () => (
   <section className="relative py-28 bg-gradient-to-b from-blue-50 to-white">
     <div className="container px-4 mx-auto">
@@ -245,7 +263,6 @@ const JourneySection = () => (
           const ref = useRef(null);
           const inView = useInView(ref, { amount: 0.6, once: false });
 
-
           return (
             <motion.div
               key={index}
@@ -253,7 +270,7 @@ const JourneySection = () => (
               initial={{ opacity: 0, y: 50 }}
               animate={inView ? { opacity: 1, y: 0, scale: 1.03 } : { opacity: 0.3, y: 50, scale: 1 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="relative flex flex-col items-center w-full max-w-2xl transition-transform duration-500"
+              className="relative flex flex-col items-center w-full max-w-2xl transition-transform duration-500 group"
             >
               {/* Active part of vertical line */}
               {inView && (
@@ -268,16 +285,19 @@ const JourneySection = () => (
 
               {/* Step circle */}
               <span
-                className={`z-10 flex items-center justify-center w-14 h-14 mb-4 text-lg font-bold border-4 rounded-full shadow-lg
-                  ${inView ? "bg-cyan-600 text-white border-white" : "bg-gray-300 text-gray-500 border-gray-100"}`}
+                className={`z-10 flex items-center justify-center w-14 h-14 mb-4 text-lg font-bold border-4 rounded-full shadow-lg transition duration-300
+                  ${inView
+                    ? "bg-cyan-600 text-white border-white group-hover:bg-yellow-400 group-hover:border-yellow-300"
+                    : "bg-gray-300 text-gray-500 border-gray-100"
+                  }`}
               >
                 {step.step}
               </span>
 
-              {/* Step content */}
-              <div className="z-10 w-full p-8 bg-white border border-gray-200 shadow-xl rounded-2xl">
+              {/* Step content card (no hover color change) */}
+              <div className="z-10 w-full p-8 transition duration-300 bg-white border border-gray-200 shadow-xl rounded-2xl">
                 <div className="flex items-center mb-5 space-x-6">
-                  <div className="flex items-center justify-center w-16 h-16 text-3xl rounded-full bg-cyan-100 text-cyan-600">
+                  <div className="flex items-center justify-center w-16 h-16 text-3xl transition duration-300 rounded-full bg-cyan-100 text-cyan-600 group-hover:bg-yellow-200 group-hover:text-yellow-600">
                     {step.icon}
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900">{step.title}</h3>
@@ -292,24 +312,34 @@ const JourneySection = () => (
   </section>
 );
 
-
 // ============ GALLERY =============
 const gallery = [
   { src: '/landing-page/dagupan-museum.jpg', caption: 'Dagupan Museum' },
   { src: '/landing-page/boat-trip.jpg', caption: 'Coastal Boat Trip' },
   { src: '/landing-page/bangus-festival.jpg', caption: 'Celebrate Festivals' },
-  { src: '/landing-page/hidden-gem.jpg', caption: 'Find Hiddem Gems' }
+  { src: '/landing-page/hidden-gem.jpg', caption: 'Find Hidden Gems' }
 ];
 
 const GallerySection = () => (
-  <section className="py-16">
+  <section className="py-16 bg-white">
     <div className="container px-4 mx-auto">
-      <h2 className="mb-8 text-3xl font-bold text-center">Explore Our Adventures</h2>
-      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+      <h2 className="mb-12 text-4xl font-extrabold text-center text-charcoal-gray">
+        Explore Our Adventures
+      </h2>
+      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {gallery.map((g) => (
-          <div key={g.src} className="overflow-hidden rounded-lg shadow-lg">
-            <img src={g.src} alt={g.caption} className="object-cover w-full h-48" />
-            <p className="p-4 text-center">{g.caption}</p>
+          <div
+            key={g.src}
+            className="relative overflow-hidden transition duration-300 transform shadow-lg rounded-xl group"
+          >
+            <img
+              src={g.src}
+              alt={g.caption}
+              className="object-cover w-full h-56 transition duration-300 ease-in-out group-hover:brightness-110 group-hover:scale-110"
+            />
+            <div className="absolute bottom-0 left-0 right-0 px-4 py-2 text-sm font-medium text-white transition-all duration-300 translate-y-full bg-gradient-to-t from-black/70 to-transparent opacity-90 group-hover:translate-y-0 group-hover:opacity-100">
+              {g.caption}
+            </div>
           </div>
         ))}
       </div>
@@ -318,12 +348,18 @@ const GallerySection = () => (
 );
 
 // ============ CTA =============
-const CTASection = () => (
+interface CTASectionProps {
+  onOpenWallet: () => void;
+}
+const CTASection = ({ onOpenWallet }: CTASectionProps) => (
   <section className="py-20 bg-cyan-vibrant text-charcoal-gray">
     <div className="container px-4 mx-auto text-center">
       <h2 className="mb-4 text-4xl font-bold">Ready to embark?</h2>
       <p className="mb-8 text-lg">Start your Pangasinan journey with us and create unforgettable memories.</p>
-      <button className="px-10 py-5 text-xl font-bold transition-all duration-300 ease-in-out rounded-full shadow-xl bg-optimistic-yellow text-charcoal-gray hover:scale-105 hover:shadow-2xl active:scale-95 focus:outline-none focus:ring-4 focus:ring-optimistic-yellow focus:ring-opacity-75">
+      <button 
+        onClick={onOpenWallet}
+        className="px-10 py-5 text-xl font-bold transition-all duration-300 ease-in-out rounded-full shadow-xl bg-optimistic-yellow text-charcoal-gray hover:scale-105 hover:shadow-2xl active:scale-95 focus:outline-none focus:ring-4 focus:ring-optimistic-yellow focus:ring-opacity-75"
+      >
         <p className="text-xl font-bold ">Start Exploring </p>
       </button>
     </div>
@@ -340,7 +376,7 @@ const Footer = () => (
         {/* Replace with your actual logo component or img tag */}
         <div className="mb-2 text-2xl font-bold text-white">Hackatour</div>
         <p className="text-sm">© {new Date().getFullYear()} Hackatour. All rights reserved.</p>
-        <p className="mt-1 text-sm">Angeles, Central Luzon, Philippines</p> {/* Added location */}
+        <p className="mt-1 text-sm">Pangasinan, Philippines</p> {/* Added location */}
       </div>
 
       {/* Column 2: Legal & About (Starts second on MD screens, 3rd on LG) */}
@@ -369,7 +405,7 @@ const Footer = () => (
         <h3 className="mb-4 text-lg font-semibold text-white">Connect</h3>
         <div className="flex mb-4 space-x-4">
           {/* Changed hover:text-white to hover:text-optimistic-yellow for social icons too */}
-          <a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer" className="text-gray-400 transition-colors duration-200 hover:text-optimistic-yellow">
+          <a href="https://www.facebook.com/share/v/1Ad2fcaVcJ/" target="_blank" rel="noopener noreferrer" className="text-gray-400 transition-colors duration-200 hover:text-optimistic-yellow">
             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h3V2h-3c-3.87 0-7 3.13-7 7v4H6v4h3v9h5v-9z"/></svg>
           </a>
         </div>
@@ -378,7 +414,6 @@ const Footer = () => (
     </div>
   </footer>
 );
-
 
 // ============ SCROLLTOTOPBUTTON =============
 const ScrollToTopButton = () => {
@@ -416,20 +451,34 @@ const ScrollToTopButton = () => {
   );
 };
 
-
 // ============ MAIN PAGE ============
-const LandingPage = () => (
-  <>
-    <Header />
-    <HeroSection />
-    <DescriptionSection />
-    <FeaturesSection />
-    <JourneySection />
-    <GallerySection />
-    <CTASection />
-    <Footer />
-    <ScrollToTopButton />
-  </>
-);
+const LandingPage = () => {
+  const [showModal, setShowModal] = useState(false);
+
+  // Function to open connect wallet modal
+  const openConnectWalletModal = () => {
+    setShowModal(true);
+  };
+
+  return (
+    <>
+      <Header onOpenWallet={openConnectWalletModal} />
+      <HeroSection onOpenWallet={openConnectWalletModal} />
+      <DescriptionSection />
+      <FeaturesSection />
+      <JourneySection />
+      <GallerySection />
+      <CTASection onOpenWallet={openConnectWalletModal} />
+      <Footer />
+      <ScrollToTopButton />
+      
+      {/* Connect Wallet Modal */}
+      <ConnectWalletModal 
+        show={showModal} 
+        onClose={() => setShowModal(false)} 
+      />
+    </>
+  );
+};
 
 export default LandingPage;

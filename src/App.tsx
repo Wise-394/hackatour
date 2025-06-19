@@ -1,12 +1,15 @@
 import { Routes, Route } from 'react-router-dom';
-import LandingPage from './pages/LandingPage'; // Correct path to your LandingPage component
+import LandingPage from './pages/LandingPage';
+import { WalletProvider, SuietWallet, SuiWallet} from '@suiet/wallet-kit';
 
 function App() {
   return (
     <div className="App">
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-      </Routes>
+      <WalletProvider defaultWallets={[SuietWallet, SuiWallet]}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+        </Routes>
+      </WalletProvider>
     </div>
   );
 }
