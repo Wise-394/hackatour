@@ -1,17 +1,24 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, useInView } from "framer-motion";
-import { Plane, Compass, Info, X, Menu, Target, Search, Award, TrendingUp, Shield, Users, PartyPopper } from 'lucide-react';
-
+import { Plane, Compass, Info, X, Menu, Target, Search, Award, TrendingUp, Shield, Users, PartyPopper, ArrowUp } from 'lucide-react';
+import { useScrollDirection } from '../hooks/UseScrollDirection';
 
 //=============HEADER====================
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const scrollDir = useScrollDirection();
+
   return (
-    <header className="fixed z-50 w-full text-white bg-charcoal-gray/80">
+    <header
+      className={`
+        fixed w-full text-white bg-charcoal-gray/80 z-50 transition-[top] duration-300
+        ${scrollDir === 'down' ? '-top-24 md:-top-20' : 'top-0'}
+      `}
+    >
       <nav className="container relative flex items-center justify-between p-4 mx-auto">
         {/* Logo */}
         <div className="flex items-center space-x-2">
-          <Plane className="w-8 h-8" />
+          <img src="/icon.png" alt="Hackatour logo" className="w-8 h-8" />
           <h1 className="text-2xl font-bold tracking-wide">Hackatour</h1>
         </div>
 
@@ -26,34 +33,34 @@ const Header = () => {
 
         {/* Nav links */}
         <ul
-          className={`flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6 
-                      bg-charcoal-gray/90 md:bg-transparent 
-                      absolute md:static top-full right-0 w-full md:w-auto p-6 md:p-0 
-                      transition-all duration-300 ease-in-out 
-                      ${open ? "opacity-100 translate-y-0 visible" : "opacity-0 -translate-y-4 invisible md:visible md:translate-y-0 md:opacity-100"}`}
+          className={`
+            flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6
+            bg-charcoal-gray/90 md:bg-transparent absolute md:static
+            top-full right-0 w-full md:w-auto p-6 md:p-0
+            transition-all duration-300 ease-in-out
+            ${open
+              ? "opacity-100 translate-y-0 visible"
+              : "opacity-0 -translate-y-4 invisible md:visible md:translate-y-0 md:opacity-100"}
+          `}
         >
           <li>
             <a href="#" className="flex items-center space-x-1 text-lg font-semibold transition-colors hover:text-optimistic-yellow">
-              <Compass className="w-5 h-5" />
-              <span>Home</span>
+              <Compass className="w-5 h-5" /><span>Home</span>
             </a>
           </li>
           <li>
             <a href="#" className="flex items-center space-x-1 text-lg font-semibold transition-colors hover:text-optimistic-yellow">
-              <Info className="w-5 h-5" />
-              <span>Faq</span>
+              <Info className="w-5 h-5" /><span>Faq</span>
             </a>
           </li>
           <li>
             <a href="#" className="flex items-center space-x-1 text-lg font-semibold transition-colors hover:text-optimistic-yellow">
-              <PartyPopper className="w-5 h-5" />
-              <span>Events</span>
+              <PartyPopper className="w-5 h-5" /><span>Events</span>
             </a>
           </li>
           <li>
             <a href="#" className="flex items-center justify-center px-5 py-2 space-x-2 font-bold transition-all rounded-full shadow-md bg-cyan-vibrant text-charcoal-gray hover:bg-optimistic-yellow hover:scale-105">
-              <Plane className="w-5 h-5" />
-              <span>Start Tour</span>
+              <Plane className="w-5 h-5" /><span>Start Tour</span>
             </a>
           </li>
         </ul>
@@ -78,10 +85,14 @@ const HeroSection = () => (
         Your unforgettable journey starts here. Discover unique experiences, earn rewards, and connect with fellow explorers.
       </p>
       <button
-        className="px-6 py-3 mt-10 text-base font-bold transition duration-300 transform rounded-full shadow-xl sm:px-8 md:px-10 sm:py-4 sm:text-lg bg-cyan-vibrant text-charcoal-gray hover:bg-optimistic-yellow hover:scale-105 animate-fade-in-up"
+        className="relative inline-flex items-center justify-center px-8 py-4 mt-10 font-extrabold transition-all duration-300 ease-in-out transform rounded-full shadow-lg group bg-cyan-vibrant text-charcoal-gray hover:bg-optimistic-yellow hover:scale-110 focus:outline-none focus:ring-4 focus:ring-cyan-300 animate-fade-in-up"
         style={{ animationDelay: '0.4s' }}
       >
-        Start Exploring
+        <span className="relative z-10 text-lg font-extrabold">Start Exploring</span>
+        <span
+          className="absolute inset-0 transition-opacity duration-300 ease-in-out bg-white rounded-full opacity-0 group-hover:opacity-10"
+          aria-hidden="true"
+        ></span>
       </button>
     </div>
   </section>
@@ -188,7 +199,7 @@ const journeySteps = [
   {
     icon: <Plane className="w-full h-full" />, step: "02",
     title: "Travel",
-    description: "Embark on your adventure with our guided routes and local recommendations for an authentic experience."
+    description: "Embark on your adventure with our guided AI routes and local recommendations for an authentic experience."
   },
   {
     icon: <Target className="w-full h-full" />, step: "03",
@@ -218,7 +229,7 @@ const JourneySection = () => (
         viewport={{ once: true }}
       >
         <h2 className="mb-6 text-5xl font-extrabold text-gray-900">
-          <span className="text-cyan-600">Hackatour</span> Your Web3 Tour Guide
+          Start Your Adventure With <span className="text-cyan-600">Hackatour</span>
         </h2>
         <p className="max-w-2xl text-xl text-center text-gray-700">
           Follow the path from discovery to mastery in the world of Web3-powered travel experiences.
@@ -312,8 +323,8 @@ const CTASection = () => (
     <div className="container px-4 mx-auto text-center">
       <h2 className="mb-4 text-4xl font-bold">Ready to embark?</h2>
       <p className="mb-8 text-lg">Start your Pangasinan journey with us and create unforgettable memories.</p>
-      <button className="px-8 py-4 font-bold transition rounded-full shadow-lg bg-optimistic-yellow text-charcoal-gray hover:scale-105">
-        Start Exploring
+      <button className="px-10 py-5 text-xl font-bold transition-all duration-300 ease-in-out rounded-full shadow-xl bg-optimistic-yellow text-charcoal-gray hover:scale-105 hover:shadow-2xl active:scale-95 focus:outline-none focus:ring-4 focus:ring-optimistic-yellow focus:ring-opacity-75">
+        <p className="text-xl font-bold ">Start Exploring </p>
       </button>
     </div>
   </section>
@@ -321,16 +332,90 @@ const CTASection = () => (
 
 // ============ FOOTER =============
 const Footer = () => (
-  <footer className="py-8 text-gray-400 bg-charcoal-gray">
-    <div className="container px-4 mx-auto text-center">
-      <p>© {new Date().getFullYear()} Hackatour. All rights reserved.</p>
-      <div className="mt-4 space-x-4">
-        <a href="#" className="hover:text-white">Privacy Policy</a>
-        <a href="#" className="hover:text-white">Terms of Service</a>
+  <footer className="py-12 text-gray-400 bg-charcoal-gray">
+    <div className="container grid grid-cols-1 gap-8 px-6 mx-auto text-center md:grid-cols-2 lg:grid-cols-4 md:text-left">
+
+      {/* Column 1: Logo & Copyright (Always spans full width on small, then 1/2 on MD, 1/4 on LG) */}
+      <div className="flex flex-col items-center col-span-full md:col-span-1 lg:col-span-1 md:items-start">
+        {/* Replace with your actual logo component or img tag */}
+        <div className="mb-2 text-2xl font-bold text-white">Hackatour</div>
+        <p className="text-sm">© {new Date().getFullYear()} Hackatour. All rights reserved.</p>
+        <p className="mt-1 text-sm">Angeles, Central Luzon, Philippines</p> {/* Added location */}
       </div>
+
+      {/* Column 2: Legal & About (Starts second on MD screens, 3rd on LG) */}
+      <div className="col-span-1">
+        <h3 className="mb-4 text-lg font-semibold text-white">Company</h3>
+        <ul className="space-y-2">
+          {/* Changed hover:text-white to hover:text-optimistic-yellow */}
+          <li><a href="/about" className="transition-colors duration-200 hover:text-optimistic-yellow">About Us</a></li>
+          <li><a href="/privacy-policy" className="transition-colors duration-200 hover:text-optimistic-yellow">Privacy Policy</a></li>
+          <li><a href="/terms-of-service" className="transition-colors duration-200 hover:text-optimistic-yellow">Terms of Service</a></li>
+        </ul>
+      </div>
+
+      {/* Column 3: Support & Contact (Starts third on MD screens, 2nd on LG - for visual balance) */}
+      <div className="col-span-1">
+        <h3 className="mb-4 text-lg font-semibold text-white">Support</h3>
+        <ul className="space-y-2">
+          {/* Changed hover:text-white to hover:text-optimistic-yellow */}
+          <li><a href="/contact" className="transition-colors duration-200 hover:text-optimistic-yellow">Contact Us</a></li>
+          <li><a href="/faq" className="transition-colors duration-200 hover:text-optimistic-yellow">FAQs</a></li>
+        </ul>
+      </div>
+
+      {/* Column 4: Social Media & Newsletter (Always on its own line on small, 2nd column on MD, last on LG) */}
+      <div className="flex flex-col items-center col-span-full md:col-span-2 lg:col-span-1 md:items-start">
+        <h3 className="mb-4 text-lg font-semibold text-white">Connect</h3>
+        <div className="flex mb-4 space-x-4">
+          {/* Changed hover:text-white to hover:text-optimistic-yellow for social icons too */}
+          <a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer" className="text-gray-400 transition-colors duration-200 hover:text-optimistic-yellow">
+            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h3V2h-3c-3.87 0-7 3.13-7 7v4H6v4h3v9h5v-9z"/></svg>
+          </a>
+        </div>
+      </div>
+
     </div>
   </footer>
 );
+
+
+// ============ SCROLLTOTOPBUTTON =============
+const ScrollToTopButton = () => {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setVisible(window.scrollY > 300);
+    };
+
+    window.addEventListener('scroll', onScroll);
+    onScroll(); 
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []); 
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <button
+      onClick={scrollToTop}
+      aria-label="Scroll to top"
+      className={`
+        fixed bottom-6 right-6 z-50 p-3
+        bg-cyan-vibrant text-charcoal-gray rounded-full shadow-lg
+        transition-all duration-300 ease-in-out
+        ${visible ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'}
+        hover:bg-optimistic-yellow hover:scale-110 hover:shadow-xl
+        focus:outline-none focus:ring-4 focus:ring-optimistic-yellow focus:ring-opacity-75
+      `}
+    >
+      <ArrowUp className="w-6 h-6" />
+    </button>
+  );
+};
+
 
 // ============ MAIN PAGE ============
 const LandingPage = () => (
@@ -343,6 +428,7 @@ const LandingPage = () => (
     <GallerySection />
     <CTASection />
     <Footer />
+    <ScrollToTopButton />
   </>
 );
 
